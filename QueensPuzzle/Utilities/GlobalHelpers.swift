@@ -21,6 +21,20 @@ struct GlobalConstants {
     static let hasQueenColor = Color.red
 
     static let queenIcon: String = "♛"
+
+    static func setupTiles(size: Int) -> [Tile] {
+        var returnTiles: [Tile] = []
+
+        for rowInt in 1...size {
+            for colInt in 1...size {
+                let position = Position(row: rowInt, col: colInt)
+                let newTile = Tile(position: position)
+                returnTiles.append(newTile)
+            }
+        }
+
+        return returnTiles
+    }
 }
 
 

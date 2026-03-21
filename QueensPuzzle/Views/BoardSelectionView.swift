@@ -33,9 +33,6 @@ struct BoardSelectionView: View {
             Spacer()
         }
         .padding(.all, 32)
-        .navigationDestination(for: Int.self) { nCount in
-            GameView(nCount: nCount)
-        }
     }
 }
 

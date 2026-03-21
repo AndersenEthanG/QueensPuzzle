@@ -6,24 +6,62 @@
 //
 
 import Foundation
-import SwiftUI
 import Combine
 
 
 // MARK: - Game View Model
-//@MainActor
-//final class GameViewModel: ObservableObject {
-//
-//}
+@MainActor
+final class GameViewModel: ObservableObject {
 
-// MARK: - Position Model
-// Keep Position globally available (Hashable) for Set membership and easy comparisons.
-struct Position: Hashable {
-    let row: Int
-    let col: Int
-}
+    // MARK: - Published Properties
+    @Published private(set) var board: Board
+    @Published var showHints: Bool = false
+    @Published var showWinScreen: Bool = false
+    @Published private(set) var elapsedTime: TimeInterval = 0
 
-struct Board {
-    let size: Int
-    var queens: Set<Position>
+
+    // MARK: - Properties
+    let boardSize: Int
+
+
+    // MARK: - Initializers
+    init(boardSize: Int) {
+        self.boardSize = boardSize
+        self.board = Board(size: boardSize)
+    }
+
+
+    // MARK: - Computed Properties
+    var queensRemaining: Int {
+        board.queensRemaining
+    }
+
+    var isSolved: Bool {
+        board.isSolved
+    }
+
+
+    // MARK: - Methods
+    func tile(at position: Position) -> Tile {
+        board.tile(at: position)
+    }
+
+    func userTapped(at position: Position) {
+        board.toggleQueen(at: position)
+
+        if board.isSolved {
+            showWinScreen = true
+        }
+    }
+
+    func toggleHints() {
+        showHints.toggle()
+    }
+
+    func resetGame() {
+        board = Board(size: boardSize)
+        showHints = false
+        showWinScreen = false
+        elapsedTime = 0
+    }
 }

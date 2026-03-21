@@ -11,57 +11,30 @@ import SwiftUI
 struct GameView: View {
 
     // MARK: - Properties
-    @State private var board: [[Bool]] = []
-    @State private var showingHints: Bool = false
-    let nCount: Int
+    @StateObject private var viewModel: GameViewModel
 
 
     // MARK: - Initializers
     init(nCount: Int) {
-        self.nCount = nCount
-    }
-
-
-    // MARK: - Computed Properties
-    private var queensPlaced: Int {
-        board.flatMap { $0 }.filter { $0 }.count
-    }
-
-    private var queensRemaining: Int {
-        max(0, nCount - queensPlaced)
-    }
-
-    private var isPlacementLocked: Bool {
-        queensRemaining == 0
+        _viewModel = StateObject(wrappedValue: GameViewModel(boardSize: nCount))
     }
 
 
     // MARK: - Main Body
     var body: some View {
         VStack(spacing: 48) {
-            Text("Queens Remaining: \(queensRemaining)")
+            Text("Queens Remaining: \(viewModel.queensRemaining)")
             Spacer()
-            VStack(spacing: 0) {
-                ForEach(0..<nCount, id: \.self) { row in
-                    HStack(spacing: 0) {
-                        ForEach(0..<nCount, id: \.self) { col in
-                            TileView(
-                                hasQueen: bindingForTile(row: row, col: col), isDisabled: isPlacementLocked && !(board[safe: row]?[safe: col] ?? false), row: row,
-                                col: col
-                            )
-                        }
-                    }
-                }
-            }
+            boardView
             Button {
-                showingHints.toggle()
+                viewModel.toggleHints()
             } label: {
-                Text(showingHints ? "Hide Hints" : "Show Hints")
+                Text(viewModel.showHints ? "Hide Hints" : "Show Hints")
             }
             .buttonStyle(.borderedProminent)
             Spacer()
             Button {
-                setupBoard()
+                viewModel.resetGame()
             } label: {
                 Text("Reset Board")
             }
@@ -69,33 +42,40 @@ struct GameView: View {
             Spacer()
         }
         .padding(32)
-        .onAppear {
-            if board.count != nCount || board.contains(where: { $0.count != nCount }) {
-                setupBoard()
-            }
+        .navigationTitle("\(viewModel.boardSize)x\(viewModel.boardSize)")
+        .alert("You Win!", isPresented: $viewModel.showWinScreen) {
+            Button("OK", role: .cancel) { }
         }
     }
 
 
-    // MARK: - Methods
-    private func setupBoard() {
-        board = Array(repeating: Array(repeating: false, count: nCount), count: nCount)
-    }
-
-    private func bindingForTile(row: Int, col: Int) -> Binding<Bool> {
-        Binding<Bool>(
-            get: {
-                if let value = board[safe: row]?[safe: col] { return value }
-                return false
-            },
-            set: { newValue in
-                guard board.indices.contains(row), board[row].indices.contains(col) else { return }
-                if isPlacementLocked && board[row][col] == false {
-                    return
-                }
-                board[row][col] = newValue
-            }
+    // MARK: - Child Views
+    private var boardView: some View {
+        let columns = Array(
+            repeating: GridItem(.fixed(GlobalConstants.tileSize), spacing: 0),
+            count: viewModel.boardSize
         )
+        let rows = Array(
+            repeating: GridItem(.fixed(GlobalConstants.tileSize), spacing: 0),
+            count: viewModel.boardSize
+        )
+
+        return LazyVGrid(columns: columns, spacing: 0) {
+            ForEach(1...viewModel.boardSize, id: \.self) { row in
+                LazyHGrid(rows: rows) {
+                    ForEach(1...viewModel.boardSize, id: \.self) { col in
+                        let position = Position(row: row, col: col)
+
+                        TileView(
+                            tile: viewModel.tile(at: position),
+                            showHints: viewModel.showHints
+                        ) {
+                            viewModel.userTapped(at: position)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

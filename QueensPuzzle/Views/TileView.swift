@@ -12,45 +12,41 @@ import SwiftUI
 struct TileView: View {
 
     // MARK: - Properties
-    @Binding var hasQueen: Bool
-    var isDisabled: Bool = false
-
-    let row: Int
-    let col: Int
+    let tile: Tile
+    let showHints: Bool
+    let action: () -> Void
 
 
-    // MARK: - Body
+    // MARK: - Main Body
     var body: some View {
-        Rectangle()
-            .fill(fillColor())
-            .frame(width: GlobalConstants.tileSize, height: GlobalConstants.tileSize)
-            .overlay {
-                if hasQueen {
-                    Text(GlobalConstants.queenIcon)
-                        .font(.system(size: GlobalConstants.tileSize))
+        Button(action: action) {
+            Rectangle()
+                .fill(tile.isLightSquare ? GlobalConstants.lightColor : GlobalConstants.darkColor)
+                .frame(width: GlobalConstants.tileSize, height: GlobalConstants.tileSize)
+                .overlay {
+                    if showHints && tile.isConflicting {
+                        Rectangle()
+                            .fill(Color.red)
+                            .opacity(0.5)
+                    }
                 }
-            }
-            .onTapGesture {
-                guard !isDisabled || hasQueen else { return }
-                hasQueen.toggle()
-            }
-    }
-
-
-    // MARK: - Computed Properties
-    func fillColor() -> Color {
-        if (row + col) % 2 == 0 {
-            return GlobalConstants.lightColor
-        } else {
-            return GlobalConstants.darkColor
+                .overlay {
+                    if tile.hasQueen {
+                        Text(GlobalConstants.queenIcon)
+                            .font(.title2)
+                    }
+                }
         }
+        .buttonStyle(.plain)
     }
 }
 
 
 // MARK: - Preview
 #Preview {
-    @Previewable @State var hasQueen: Bool = false
+    @Previewable @State var tile = Tile(position: Position(row: 1, col: 1))
 
-    TileView(hasQueen: $hasQueen, row: 1, col: 1)
+    TileView(tile: tile, showHints: false) {
+        print("")
+    }
 }
