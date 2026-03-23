@@ -34,14 +34,20 @@ struct Board {
         max(0, size - queensPlaced)
     }
 
-    var conflictingPositions: [Position] {
-        tiles
-            .filter(\.isConflicting)
+    var threatenedQueenPositions: [Position] {
+        tiles.filter { $0.hasQueen && $0.isThreatened }
             .map(\.position)
     }
 
+    /// While there are ways to make this property more concise, we can avoid unnecessary computation by spreading out the properties to check.
     var isSolved: Bool {
-        queensPlaced == size && conflictingPositions.isEmpty
+        if queensPlaced == size {
+            if threatenedQueenPositions.isEmpty {
+                return true
+            }
+        }
+
+        return false
     }
 
 
@@ -60,8 +66,13 @@ struct Board {
     mutating func toggleQueen(at position: Position) {
         guard let index = tiles.firstIndex(where: { $0.position == position }) else { return }
 
-        tiles[index].hasQueen.toggle()
-        updateConflictingPositions()
+        if tiles[index].hasQueen {
+            tiles[index].hasQueen = false
+            updateConflictingPositions()
+        } else if queensRemaining > 0 {
+            tiles[index].hasQueen = true
+            updateConflictingPositions()
+        }
     }
 
     mutating func reset() {
@@ -76,7 +87,7 @@ struct Board {
 
     mutating private func updateConflictingPositions() {
         for index in tiles.indices {
-            tiles[index].isConflicting = false
+            tiles[index].isThreatened = false
         }
 
         let queens = queenTiles()
@@ -95,7 +106,7 @@ struct Board {
                     abs(tilePosition.col - queenPosition.col)
 
                 if sharesRow || sharesColumn || sharesDiagonal {
-                    tiles[index].isConflicting = true
+                    tiles[index].isThreatened = true
                 }
             }
         }
@@ -107,7 +118,7 @@ struct Board {
 struct Tile {
     var position: Position
     var hasQueen: Bool = false
-    var isConflicting: Bool = false
+    var isThreatened: Bool = false
 
     var isLightSquare: Bool {
         (position.row + position.col).isMultiple(of: 2)

@@ -36,10 +36,6 @@ final class GameViewModel: ObservableObject {
         board.queensRemaining
     }
 
-    var isSolved: Bool {
-        board.isSolved
-    }
-
 
     // MARK: - Methods
     func tile(at position: Position) -> Tile {

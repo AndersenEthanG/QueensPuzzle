@@ -24,7 +24,7 @@ struct TileView: View {
                 .fill(tile.isLightSquare ? GlobalConstants.lightColor : GlobalConstants.darkColor)
                 .frame(width: GlobalConstants.tileSize, height: GlobalConstants.tileSize)
                 .overlay {
-                    if showHints && tile.isConflicting {
+                    if showHints && tile.isThreatened {
                         Rectangle()
                             .fill(Color.red)
                             .opacity(0.5)
