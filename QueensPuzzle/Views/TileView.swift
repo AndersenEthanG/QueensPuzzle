@@ -27,7 +27,7 @@ struct TileView: View {
                     if showHints && tile.isThreatened {
                         Rectangle()
                             .fill(Color.red)
-                            .opacity(0.5)
+                            .opacity(0.75)
                     }
                 }
                 .overlay {

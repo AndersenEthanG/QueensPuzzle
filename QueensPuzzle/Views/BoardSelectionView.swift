@@ -20,23 +20,31 @@ struct BoardSelectionView: View {
 
     // MARK: - Main Body
     var body: some View {
-        VStack(spacing: 36) {
-            Text("Queens Puzzle")
-                .font(.title)
-                .fontWeight(.bold)
-            Stepper("Board Size: \(boardSize)", value: $boardSize, in: minBoardSize...maxBoardSize)
-            Text("Best Time: \(bestTimeForBoardSize())")
-            Button {
-                router.push(.game(nCount: boardSize))
-            } label: {
-                Text("Start")
-                    .font(.title2)
-                    .padding(.horizontal, 32)
+        ZStack {
+            Color(.systemGroupedBackground)
+                .ignoresSafeArea()
+            VStack {
+                VStack(spacing: 36) {
+                    Text("Queens Puzzle")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    Stepper("Board Size: \(boardSize)", value: $boardSize, in: minBoardSize...maxBoardSize)
+                    Text("Best Time: \(bestTimeForBoardSize())")
+                    Button {
+                        router.push(.game(nCount: boardSize))
+                    } label: {
+                        Text("Start")
+                            .font(.title2)
+                            .padding(.horizontal, 32)
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+                .padding()
+                .glassEffect(in: .rect(cornerRadius: 20))
+                .padding()
+                Spacer()
             }
-            .buttonStyle(.borderedProminent)
-            Spacer()
         }
-        .padding(.all, 32)
     }
 
 

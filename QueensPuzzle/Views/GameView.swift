@@ -11,6 +11,7 @@ import SwiftUI
 struct GameView: View {
 
     // MARK: - Properties
+    @EnvironmentObject private var router: AppRouter
     @StateObject private var viewModel: GameViewModel
 
 
@@ -22,32 +23,73 @@ struct GameView: View {
 
     // MARK: - Main Body
     var body: some View {
-        VStack(spacing: 36) {
-            Text("Queens Remaining: \(viewModel.queensRemaining)")
-            Text("Elapsed Time: \(GameTimeFormatter.hourMinuteSecond(from: viewModel.elapsedTime, decimals: 0))")
-            Spacer()
-            boardView
-                .disabled(viewModel.gameEnded)
-            Button {
-                viewModel.toggleHints()
-            } label: {
-                Text(viewModel.showHints ? "Hide Hints" : "Show Hints")
+        ZStack {
+            Color(.systemGroupedBackground)
+                .ignoresSafeArea()
+            VStack {
+                VStack(spacing: 64) {
+                    VStack(spacing: 16) {
+                        ZStack {
+                            HStack {
+                                Button {
+                                    router.popCurrent()
+                                } label: {
+                                    Image(systemName: "chevron.left")
+                                        .font(.title2)
+                                }
+                                .buttonStyle(.plain)
+                                .padding(10)
+                                .glassEffect(in: .circle)
+                                Spacer()
+                            }
+                            Text("Puzzle Size: \(viewModel.boardSize)x\(viewModel.boardSize)")
+                                .font(.title2.weight(.semibold))
+                        }
+                        Text("Queens Remaining: \(viewModel.queensRemaining)")
+                            .font(.headline)
+                        Text("Elapsed Time: \(GameTimeFormatter.hourMinuteSecond(from: viewModel.elapsedTime, decimals: 0))")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    boardView
+                        .disabled(viewModel.gameEnded)
+                    VStack(spacing: 16) {
+                        Button {
+                            viewModel.toggleHints()
+                        } label: {
+                            Text(viewModel.showHints ? "Hide Hints" : "Show Hints")
+                                .frame(minWidth: 120)
+                        }
+                        .buttonStyle(.glassProminent)
+                        .controlSize(.large)
+                        .padding()
+                        Button {
+                            viewModel.resetGame()
+                        } label: {
+                            Text("Reset Board")
+                                .frame(minWidth: 120)
+                        }
+                        .buttonStyle(.glassProminent)
+                        .controlSize(.large)
+                    }
+                }
+                .padding()
+                .glassEffect(in: .rect(cornerRadius: 20))
+                .padding()
+                Spacer()
             }
-            .buttonStyle(.borderedProminent)
-            Spacer()
-            Button {
-                viewModel.resetGame()
-            } label: {
-                Text("Reset Board")
+            if viewModel.showWinScreen {
+                ZStack {
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                    winScreen
+                        .padding(.horizontal, 24)
+                        .padding(.bottom, 120)
+                }
             }
-            .buttonStyle(.borderedProminent)
-            Spacer()
         }
-        .padding(32)
-        .navigationTitle("\(viewModel.boardSize)x\(viewModel.boardSize)")
-        .alert("You Win!\nYour time was \(GameTimeFormatter.hourMinuteSecond(from: viewModel.elapsedTime, decimals: 2))", isPresented: $viewModel.showWinScreen) {
-            Button("OK", role: .cancel) { }
-        }
+        .navigationBarBackButtonHidden(true)
+        .animation(.bouncy(duration: 0.4), value: viewModel.showWinScreen)
         .onAppear {
             viewModel.startGame()
         }
@@ -80,6 +122,35 @@ struct GameView: View {
                     }
                 }
             }
+        }
+    }
+
+    private var winScreen: some View {
+        GlassEffectContainer {
+            VStack(spacing: 10) {
+                Text("You Win!")
+                    .font(.title.weight(.semibold))
+                Text("Your time: \(GameTimeFormatter.hourMinuteSecond(from: viewModel.elapsedTime, decimals: 2))")
+                    .font(.headline)
+                if let bestTime = viewModel.bestTime {
+                    Text("Best time: \(GameTimeFormatter.hourMinuteSecond(from: bestTime, decimals: 2))")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                Button {
+                    viewModel.showWinScreen = false
+                } label: {
+                    Text("Continue")
+                        .font(.title3)
+                        .fontWeight(.medium)
+                        .padding(.horizontal, 48)
+                }
+                .buttonStyle(.borderedProminent)
+                .glassEffect(.regular.interactive())
+                .padding(.top)
+            }
+            .padding(32)
+            .glassEffect(in: .rect(cornerRadius: 32))
         }
     }
 }

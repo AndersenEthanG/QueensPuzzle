@@ -24,6 +24,10 @@ final class AppRouter: ObservableObject {
         path.append(route)
     }
 
+    func popCurrent() {
+        path.removeLast()
+    }
+
     func popToRoot() {
         path.removeAll()
     }

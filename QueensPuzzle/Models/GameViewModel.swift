@@ -60,7 +60,7 @@ final class GameViewModel: ObservableObject {
 
         if board.isSolved {
             stopGame()
-            showWinScreen = true
+            userWon()
         }
     }
 
@@ -69,29 +69,26 @@ final class GameViewModel: ObservableObject {
     }
 
     func resetGame() {
+        stopGame()
+
         board = Board(size: boardSize)
+        gameEnded = false
         showHints = false
         showWinScreen = false
-        elapsedTime = 0
-        gameEnded = false
+
+        startGame()
     }
 
     func stopGame() {
         gameEnded = true
         stopTimer()
-        guard let startDate else { return }
-
-        let elapsed = Date().timeIntervalSince(startDate)
-        elapsedTime = elapsed
-        bestTimeStore.saveBestTime(elapsed, for: boardSize)
-        bestTime = bestTimeStore.bestTime(for: boardSize)
     }
 
     @MainActor
     private func startTimer() {
         stopTimer()
 
-        timerCancellable = Timer.publish(every: 0.1, on: .main, in: .common)
+        timerCancellable = Timer.publish(every: 1.0, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self else { return }
@@ -107,5 +104,16 @@ final class GameViewModel: ObservableObject {
     private func updateElapsedTime() {
         guard let startDate else { return }
         elapsedTime = Date().timeIntervalSince(startDate)
+    }
+
+    private func userWon() {
+        guard let startDate else { return }
+
+        let elapsed = Date().timeIntervalSince(startDate)
+        elapsedTime = elapsed
+        bestTimeStore.saveBestTime(elapsed, for: boardSize)
+        bestTime = bestTimeStore.bestTime(for: boardSize)
+
+        showWinScreen = true
     }
 }
