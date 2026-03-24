@@ -14,6 +14,7 @@ struct TileView: View {
     // MARK: - Properties
     let tile: Tile
     let showHints: Bool
+    let tileSize: CGFloat
     let action: () -> Void
 
 
@@ -22,12 +23,11 @@ struct TileView: View {
         Button(action: action) {
             Rectangle()
                 .fill(tile.isLightSquare ? BoardUI.lightSquareColor : BoardUI.darkSquareColor)
-                .frame(width: BoardUI.tileSize, height: BoardUI.tileSize)
+                .frame(width: tileSize, height: tileSize)
                 .overlay {
                     if showHints && tile.isThreatened {
                         Rectangle()
-                            .fill(Color.red)
-                            .opacity(0.75)
+                            .fill(Color.red.opacity(0.75))
                     }
                 }
                 .overlay {
@@ -35,6 +35,7 @@ struct TileView: View {
                         Image(Assets.blackQueen)
                             .resizable()
                             .scaledToFit()
+                            .padding(tileSize * 0.12)
                     }
                 }
         }
@@ -47,7 +48,7 @@ struct TileView: View {
 #Preview {
     @Previewable @State var tile = Tile(position: Position(row: 1, col: 1))
 
-    TileView(tile: tile, showHints: false) {
+    TileView(tile: tile, showHints: false, tileSize: 16) {
         print("")
     }
 }

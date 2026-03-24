@@ -28,50 +28,9 @@ struct GameView: View {
                 .ignoresSafeArea()
             VStack {
                 VStack(spacing: 64) {
-                    VStack(spacing: 16) {
-                        ZStack {
-                            HStack {
-                                Button {
-                                    router.popCurrent()
-                                } label: {
-                                    Image(systemName: "chevron.left")
-                                        .font(.title2)
-                                }
-                                .buttonStyle(.plain)
-                                .padding(10)
-                                .glassEffect(in: .circle)
-                                Spacer()
-                            }
-                            Text("Puzzle Size: \(viewModel.boardSize)x\(viewModel.boardSize)")
-                                .font(.title2.weight(.semibold))
-                        }
-                        Text("Queens Remaining: \(viewModel.queensRemaining)")
-                            .font(.headline)
-                        Text("Elapsed Time: \(GameTimeFormatter.hourMinuteSecond(from: viewModel.elapsedTime, decimals: 0))")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    boardView
-                        .disabled(viewModel.gameEnded)
-                    VStack(spacing: 16) {
-                        Button {
-                            viewModel.toggleHints()
-                        } label: {
-                            Text(viewModel.showHints ? "Hide Hints" : "Show Hints")
-                                .frame(minWidth: 120)
-                        }
-                        .buttonStyle(.glassProminent)
-                        .controlSize(.large)
-                        .padding()
-                        Button {
-                            viewModel.resetGame()
-                        } label: {
-                            Text("Reset Board")
-                                .frame(minWidth: 120)
-                        }
-                        .buttonStyle(.glassProminent)
-                        .controlSize(.large)
-                    }
+                    headerView
+                    boardContainerView
+                    controlsView
                 }
                 .padding()
                 .glassEffect(in: .rect(cornerRadius: 20))
@@ -97,31 +56,85 @@ struct GameView: View {
 
 
     // MARK: - Child Views
-    private var boardView: some View {
-        let columns = Array(
-            repeating: GridItem(.fixed(BoardUI.tileSize), spacing: 0),
-            count: viewModel.boardSize
-        )
-        let rows = Array(
-            repeating: GridItem(.fixed(BoardUI.tileSize), spacing: 0),
-            count: viewModel.boardSize
-        )
+    private var headerView: some View {
+        VStack(spacing: 16) {
+            ZStack {
+                HStack {
+                    Button {
+                        router.popCurrent()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.title2)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(10)
+                    .glassEffect(in: .circle)
+                    Spacer()
+                }
+                Text("Puzzle Size: \(viewModel.boardSize)x\(viewModel.boardSize)")
+                    .font(.title2.weight(.semibold))
+            }
+            Text("Queens Remaining: \(viewModel.queensRemaining)")
+                .font(.headline)
+            Text("Elapsed Time: \(GameTimeFormatter.hourMinuteSecond(from: viewModel.elapsedTime, decimals: 0))")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+    }
 
-        return LazyVGrid(columns: columns, spacing: 0) {
+    private var boardContainerView: some View {
+        GeometryReader { geometry in
+            let sideLength = min(geometry.size.width, geometry.size.height)
+            let tileSize = sideLength / CGFloat(viewModel.boardSize)
+
+            boardView(tileSize: tileSize)
+                .frame(width: sideLength, height: sideLength)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .aspectRatio(1, contentMode: .fit)
+        .disabled(viewModel.gameEnded)
+    }
+
+    private func boardView(tileSize: CGFloat) -> some View {
+        VStack(spacing: 0) {
             ForEach(1...viewModel.boardSize, id: \.self) { row in
-                LazyHGrid(rows: rows) {
+                HStack(spacing: 0) {
                     ForEach(1...viewModel.boardSize, id: \.self) { col in
                         let position = Position(row: row, col: col)
-
+                        
                         TileView(
                             tile: viewModel.tile(at: position),
-                            showHints: viewModel.showHints
+                            showHints: viewModel.showHints,
+                            tileSize: tileSize
                         ) {
                             viewModel.userTapped(at: position)
                         }
                     }
                 }
             }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private var controlsView: some View {
+        VStack(spacing: 16) {
+            Button {
+                viewModel.toggleHints()
+            } label: {
+                Text(viewModel.showHints ? "Hide Hints" : "Show Hints")
+                    .frame(minWidth: 120)
+            }
+            .buttonStyle(.glassProminent)
+            .controlSize(.large)
+            .padding()
+            Button {
+                viewModel.resetGame()
+            } label: {
+                Text("Reset Board")
+                    .frame(minWidth: 120)
+            }
+            .buttonStyle(.glassProminent)
+            .controlSize(.large)
         }
     }
 
