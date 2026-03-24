@@ -9,23 +9,17 @@ import Foundation
 import SwiftUI
 
 
-// MARK: - Global Constants
+// MARK: - Global Helpers
 enum BoardUI {
     static let tileSize: CGFloat = 36
 
-    static let lightColor = Color.gray.opacity(0.3)
-    static let darkColor = Color.gray.opacity(0.7)
+    static let darkSquareColor = Color(hex: 0x739552)
+    static let lightSquareColor = Color(hex: 0xEBECD0)
     static let hasQueenColor = Color.red
-
-    static let queenIcon: String = "♛"
 }
 
-
-// MARK: - Safe index helper
-extension Array {
-    subscript(safe index: Int) -> Element? {
-        indices.contains(index) ? self[index] : nil
-    }
+enum Assets {
+    static let blackQueen = "blackQueenIcon"
 }
 
 
@@ -65,5 +59,24 @@ enum GameTimeFormatter {
                 return String(format: "\(secondsFormat)s", seconds)
             }
         }
+    }
+}
+
+
+// MARK: - Extensions
+extension Array {
+    subscript(safe index: Int) -> Element? {
+        indices.contains(index) ? self[index] : nil
+    }
+}
+
+
+extension Color {
+    init(hex: Int, opacity: Double = 1.0) {
+        let red = Double((hex >> 16) & 0xFF) / 255.0
+        let green = Double((hex >> 8) & 0xFF) / 255.0
+        let blue = Double(hex & 0xFF) / 255.0
+
+        self.init(.sRGB, red: red, green: green, blue: blue, opacity: opacity)
     }
 }

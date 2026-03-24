@@ -42,6 +42,27 @@ final class GameViewModel: ObservableObject {
     var queensRemaining: Int {
         board.queensRemaining
     }
+    
+    // Placement & removal helpers
+    func canPlace(at position: Position) -> Bool {
+        !board.hasQueen(at: position) && queensRemaining > 0
+    }
+
+    func placeQueen(at position: Position) -> Bool {
+        guard canPlace(at: position) else { return false }
+        board.toggleQueen(at: position)
+        if board.isSolved {
+            stopGame()
+            showWinScreen = true
+        }
+        return true
+    }
+
+    func removeQueen(at position: Position) -> Bool {
+        guard board.hasQueen(at: position) else { return false }
+        board.toggleQueen(at: position)
+        return true
+    }
 
 
     // MARK: - Methods
@@ -56,12 +77,13 @@ final class GameViewModel: ObservableObject {
     }
 
     func userTapped(at position: Position) {
-        board.toggleQueen(at: position)
-
-        if board.isSolved {
-            stopGame()
-            showWinScreen = true
+        if board.hasQueen(at: position) {
+            _ = removeQueen(at: position)
+        } else {
+            _ = placeQueen(at: position)
         }
+
+        // Win check is handled inside placeQueen
     }
 
     func toggleHints() {
@@ -74,6 +96,7 @@ final class GameViewModel: ObservableObject {
         showWinScreen = false
         elapsedTime = 0
         gameEnded = false
+        startGame()
     }
 
     func stopGame() {
@@ -91,7 +114,7 @@ final class GameViewModel: ObservableObject {
     private func startTimer() {
         stopTimer()
 
-        timerCancellable = Timer.publish(every: 0.1, on: .main, in: .common)
+        timerCancellable = Timer.publish(every: 1.0, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self else { return }
@@ -109,3 +132,4 @@ final class GameViewModel: ObservableObject {
         elapsedTime = Date().timeIntervalSince(startDate)
     }
 }
+

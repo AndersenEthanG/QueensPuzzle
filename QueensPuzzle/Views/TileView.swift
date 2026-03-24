@@ -21,7 +21,7 @@ struct TileView: View {
     var body: some View {
         Button(action: action) {
             Rectangle()
-                .fill(tile.isLightSquare ? BoardUI.lightColor : BoardUI.darkColor)
+                .fill(tile.isLightSquare ? BoardUI.lightSquareColor : BoardUI.darkSquareColor)
                 .frame(width: BoardUI.tileSize, height: BoardUI.tileSize)
                 .overlay {
                     if showHints && tile.isThreatened {
@@ -32,8 +32,9 @@ struct TileView: View {
                 }
                 .overlay {
                     if tile.hasQueen {
-                        Text(BoardUI.queenIcon)
-                            .font(.title2)
+                        Image(Assets.blackQueen)
+                            .resizable()
+                            .scaledToFit()
                     }
                 }
         }
@@ -44,7 +45,7 @@ struct TileView: View {
 
 // MARK: - Preview
 #Preview {
-    @Previewable @State var tile = Tile(position: Position(row: 1, col: 1))
+    @Previewable @State var tile = Tile(position: Position(row: 1, col: 1), hasQueen: true)
 
     TileView(tile: tile, showHints: false) {
         print("")
