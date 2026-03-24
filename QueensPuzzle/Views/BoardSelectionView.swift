@@ -15,7 +15,7 @@ struct BoardSelectionView: View {
     @State var boardSize: Int = 4
 
     let minBoardSize: Int = 4
-    let maxBoardSize: Int = 8
+    let maxBoardSize: Int = 16
 
 
     // MARK: - Main Body
