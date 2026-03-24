@@ -15,17 +15,19 @@ struct GameView: View {
 
 
     // MARK: - Initializers
-    init(nCount: Int) {
-        _viewModel = StateObject(wrappedValue: GameViewModel(boardSize: nCount))
+    init(boardSize: Int) {
+        _viewModel = StateObject(wrappedValue: GameViewModel(boardSize: boardSize))
     }
 
 
     // MARK: - Main Body
     var body: some View {
-        VStack(spacing: 48) {
+        VStack(spacing: 36) {
             Text("Queens Remaining: \(viewModel.queensRemaining)")
+            Text("Elapsed Time: \(GameTimeFormatter.hourMinuteSecond(from: viewModel.elapsedTime, decimals: 0))")
             Spacer()
             boardView
+                .disabled(viewModel.gameEnded)
             Button {
                 viewModel.toggleHints()
             } label: {
@@ -43,8 +45,11 @@ struct GameView: View {
         }
         .padding(32)
         .navigationTitle("\(viewModel.boardSize)x\(viewModel.boardSize)")
-        .alert("You Win!", isPresented: $viewModel.showWinScreen) {
+        .alert("You Win!\nYour time was \(GameTimeFormatter.hourMinuteSecond(from: viewModel.elapsedTime, decimals: 2))", isPresented: $viewModel.showWinScreen) {
             Button("OK", role: .cancel) { }
+        }
+        .onAppear {
+            viewModel.startGame()
         }
     }
 
@@ -52,11 +57,11 @@ struct GameView: View {
     // MARK: - Child Views
     private var boardView: some View {
         let columns = Array(
-            repeating: GridItem(.fixed(GlobalConstants.tileSize), spacing: 0),
+            repeating: GridItem(.fixed(BoardUI.tileSize), spacing: 0),
             count: viewModel.boardSize
         )
         let rows = Array(
-            repeating: GridItem(.fixed(GlobalConstants.tileSize), spacing: 0),
+            repeating: GridItem(.fixed(BoardUI.tileSize), spacing: 0),
             count: viewModel.boardSize
         )
 
@@ -82,5 +87,5 @@ struct GameView: View {
 
 // MARK: - Preview
 #Preview {
-    GameView(nCount: 4)
+    GameView(boardSize: 4)
 }

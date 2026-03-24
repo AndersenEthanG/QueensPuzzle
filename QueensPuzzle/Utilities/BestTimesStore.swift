@@ -15,16 +15,32 @@ protocol BestTimeStoring {
 
 
 // MARK: - Best Times Store
-/*
 final class BestTimeStore: BestTimeStoring {
+    private let defaults: UserDefaults
+    private static let keyPrefix = "com.AndersenEthanG.queensPuzzle.bestTime."
+
+    init(userDefaults: UserDefaults = .standard) {
+        self.defaults = userDefaults
+    }
+
+    private func key(for boardSize: Int) -> String {
+        "\(Self.keyPrefix)\(boardSize)"
+    }
+
     func bestTime(for boardSize: Int) -> TimeInterval? {
-        <#code#>
+        let key = key(for: boardSize)
+        let stored = defaults.object(forKey: key) as? Double
+        return stored
     }
     
     func saveBestTime(_ time: TimeInterval, for boardSize: Int) {
-        <#code#>
+        let key = key(for: boardSize)
+        let newTime = time
+
+        if let existing = defaults.object(forKey: key) as? Double {
+            guard newTime < existing else { return }
+        }
+
+        defaults.set(newTime, forKey: key)
     }
-    
-    // UserDefaults implementation
 }
-*/

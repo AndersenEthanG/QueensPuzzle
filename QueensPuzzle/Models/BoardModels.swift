@@ -12,7 +12,6 @@ import SwiftUI
 // MARK: - Board Model
 struct Board {
 
-
     // MARK: - Properties
     let size: Int
     private(set) var tiles: [Tile]
@@ -21,7 +20,7 @@ struct Board {
     // MARK: - Initializers
     init(size: Int) {
         self.size = size
-        self.tiles = GlobalConstants.setupTiles(size: size)
+        self.tiles = Board.setupTiles(size: size)
     }
 
 
@@ -76,11 +75,25 @@ struct Board {
     }
 
     mutating func reset() {
-        tiles = GlobalConstants.setupTiles(size: size)
+        tiles = Board.setupTiles(size: size)
     }
 
 
     // MARK: - Private Methods
+    private static func setupTiles(size: Int) -> [Tile] {
+        var returnTiles: [Tile] = []
+
+        for rowInt in 1...size {
+            for colInt in 1...size {
+                let position = Position(row: rowInt, col: colInt)
+                let newTile = Tile(position: position)
+                returnTiles.append(newTile)
+            }
+        }
+
+        return returnTiles
+    }
+
     private func queenTiles() -> [Tile] {
         tiles.filter(\.hasQueen)
     }

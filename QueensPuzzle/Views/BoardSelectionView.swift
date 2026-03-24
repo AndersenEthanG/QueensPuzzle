@@ -12,7 +12,10 @@ struct BoardSelectionView: View {
 
     // MARK: - Properties
     @EnvironmentObject private var router: AppRouter
-    @State var nCount: Int = 4
+    @State var boardSize: Int = 4
+
+    let minBoardSize: Int = 4
+    let maxBoardSize: Int = 8
 
 
     // MARK: - Main Body
@@ -21,9 +24,10 @@ struct BoardSelectionView: View {
             Text("Queens Puzzle")
                 .font(.title)
                 .fontWeight(.bold)
-            Stepper("Board Size: \(nCount)", value: $nCount, in: GlobalConstants.minBoardSize...GlobalConstants.maxBoardSize)
+            Stepper("Board Size: \(boardSize)", value: $boardSize, in: minBoardSize...maxBoardSize)
+            Text("Best Time: \(bestTimeForBoardSize())")
             Button {
-                router.push(.game(nCount: nCount))
+                router.push(.game(nCount: boardSize))
             } label: {
                 Text("Start")
                     .font(.title2)
@@ -33,6 +37,17 @@ struct BoardSelectionView: View {
             Spacer()
         }
         .padding(.all, 32)
+    }
+
+
+    // MARK: - Methods
+    private func bestTimeForBoardSize() -> String {
+        if let storedBestTime = BestTimeStore().bestTime(for: boardSize) {
+            let formattedTime = GameTimeFormatter.hourMinuteSecond(from: storedBestTime, decimals: 2)
+            return formattedTime
+        } else {
+            return "Set your first record!"
+        }
     }
 }
 
@@ -45,8 +60,8 @@ struct BoardSelectionView: View {
         BoardSelectionView()
             .navigationDestination(for: Route.self) { route in
                 switch route {
-                case .game(let nCount):
-                    GameView(nCount: nCount)
+                case .game(let boardSize):
+                    GameView(boardSize: boardSize)
                 }
             }
             .environmentObject(router)

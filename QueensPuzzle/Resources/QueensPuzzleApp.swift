@@ -22,8 +22,8 @@ struct QueensPuzzleApp: App {
                 BoardSelectionView()
                     .navigationDestination(for: Route.self) { route in
                         switch route {
-                        case .game(let nCount):
-                            GameView(nCount: nCount)
+                        case .game(let boardSize):
+                            GameView(boardSize: boardSize)
                         }
                     }
             }

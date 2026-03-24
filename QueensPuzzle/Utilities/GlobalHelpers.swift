@@ -10,10 +10,7 @@ import SwiftUI
 
 
 // MARK: - Global Constants
-struct GlobalConstants {
-    static let minBoardSize: Int = 4
-    static let maxBoardSize: Int = 8
-
+enum BoardUI {
     static let tileSize: CGFloat = 36
 
     static let lightColor = Color.gray.opacity(0.3)
@@ -21,20 +18,6 @@ struct GlobalConstants {
     static let hasQueenColor = Color.red
 
     static let queenIcon: String = "♛"
-
-    static func setupTiles(size: Int) -> [Tile] {
-        var returnTiles: [Tile] = []
-
-        for rowInt in 1...size {
-            for colInt in 1...size {
-                let position = Position(row: rowInt, col: colInt)
-                let newTile = Tile(position: position)
-                returnTiles.append(newTile)
-            }
-        }
-
-        return returnTiles
-    }
 }
 
 
@@ -42,5 +25,45 @@ struct GlobalConstants {
 extension Array {
     subscript(safe index: Int) -> Element? {
         indices.contains(index) ? self[index] : nil
+    }
+}
+
+
+// MARK: - Game Time Formatter
+enum GameTimeFormatter {
+    static func hourMinuteSecond(from time: TimeInterval, decimals: Int) -> String {
+        let totalSeconds = Int(time)
+        let hours = totalSeconds / 3600
+        let minutes = (totalSeconds % 3600) / 60
+        let seconds = time.truncatingRemainder(dividingBy: 60)
+
+        let decimals = max(0, decimals)
+
+        let secondsFormat: String = decimals == 0
+        ? "%d"
+        : "%.\(decimals)f"
+
+        switch (hours, minutes) {
+        case let (h, _) where h > 0:
+            if decimals == 0 {
+                return String(format: "%dh %dm \(secondsFormat)s", hours, minutes, Int(seconds))
+            } else {
+                return String(format: "%dh %dm \(secondsFormat)s", hours, minutes, seconds)
+            }
+
+        case let (_, m) where m > 0:
+            if decimals == 0 {
+                return String(format: "%dm \(secondsFormat)s", minutes, Int(seconds))
+            } else {
+                return String(format: "%dm \(secondsFormat)s", minutes, seconds)
+            }
+
+        default:
+            if decimals == 0 {
+                return String(format: "\(secondsFormat)s", Int(seconds))
+            } else {
+                return String(format: "\(secondsFormat)s", seconds)
+            }
+        }
     }
 }

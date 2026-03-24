@@ -21,8 +21,8 @@ struct TileView: View {
     var body: some View {
         Button(action: action) {
             Rectangle()
-                .fill(tile.isLightSquare ? GlobalConstants.lightColor : GlobalConstants.darkColor)
-                .frame(width: GlobalConstants.tileSize, height: GlobalConstants.tileSize)
+                .fill(tile.isLightSquare ? BoardUI.lightColor : BoardUI.darkColor)
+                .frame(width: BoardUI.tileSize, height: BoardUI.tileSize)
                 .overlay {
                     if showHints && tile.isThreatened {
                         Rectangle()
@@ -32,7 +32,7 @@ struct TileView: View {
                 }
                 .overlay {
                     if tile.hasQueen {
-                        Text(GlobalConstants.queenIcon)
+                        Text(BoardUI.queenIcon)
                             .font(.title2)
                     }
                 }
