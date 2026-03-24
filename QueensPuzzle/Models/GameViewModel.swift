@@ -58,6 +58,12 @@ final class GameViewModel: ObservableObject {
     func userTapped(at position: Position) {
         board.toggleQueen(at: position)
 
+        if board.hasQueen(at: position) {
+            SoundManager.shared.play(.place)
+        } else {
+            SoundManager.shared.play(.remove)
+        }
+
         if board.isSolved {
             stopGame()
             showWinScreen = true
@@ -85,6 +91,7 @@ final class GameViewModel: ObservableObject {
         elapsedTime = elapsed
         bestTimeStore.saveBestTime(elapsed, for: boardSize)
         bestTime = bestTimeStore.bestTime(for: boardSize)
+        SoundManager.shared.play(.win)
     }
 
     @MainActor

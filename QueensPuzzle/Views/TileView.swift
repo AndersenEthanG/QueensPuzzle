@@ -19,7 +19,7 @@ struct TileView: View {
 
     // MARK: - Main Body
     var body: some View {
-        Button(action: action) {
+        Button(action: action, label: {
             Rectangle()
                 .fill(tile.isLightSquare ? BoardUI.lightSquareColor : BoardUI.darkSquareColor)
                 .frame(width: BoardUI.tileSize, height: BoardUI.tileSize)
@@ -37,7 +37,7 @@ struct TileView: View {
                             .scaledToFit()
                     }
                 }
-        }
+        })
         .buttonStyle(.plain)
     }
 }
@@ -51,3 +51,4 @@ struct TileView: View {
         print("")
     }
 }
+

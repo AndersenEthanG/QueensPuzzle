@@ -16,6 +16,10 @@ enum BoardUI {
     static let darkSquareColor = Color(hex: 0x739552)
     static let lightSquareColor = Color(hex: 0xEBECD0)
     static let hasQueenColor = Color.red
+
+    static let backgroundTop = Color(hex: 0x0B1B0F)
+    static let backgroundBottom = Color(hex: 0x1F3B22)
+    static let accent = Color(hex: 0x4CAF50)
 }
 
 enum Assets {
