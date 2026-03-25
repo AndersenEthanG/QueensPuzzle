@@ -63,6 +63,7 @@ While the board size/number of queens can't be less than 4, I first assumed that
 The project focuses on unit testing core game logic, ensuring correctness of the puzzle mechanics.
 
 - What is tested
+Board setup, tile placement, and light/dark square positioning.
 Queen placement and removal.
 Queen conflict detection: row, column, and diagonal.
 Correct win condition validation.
