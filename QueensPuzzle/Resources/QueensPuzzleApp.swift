@@ -12,7 +12,9 @@ import SwiftUI
 struct QueensPuzzleApp: App {
 
     // MARK: - Properties
+    /// Modern SwiftUI navigation router tool.
     @StateObject private var router = AppRouter()
+    
     private let bestTimeStore = BestTimeStore()
 
 

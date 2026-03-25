@@ -15,6 +15,8 @@ protocol BestTimeStoring {
 
 
 // MARK: - Best Times Store
+/// Best times are stored in UserDefaults
+/// on a board by board basis.
 final class BestTimeStore: BestTimeStoring {
     private let defaults: UserDefaults
     private static let keyPrefix = "com.AndersenEthanG.queensPuzzle.bestTime."

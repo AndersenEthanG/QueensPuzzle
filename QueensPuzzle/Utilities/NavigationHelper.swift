@@ -16,6 +16,9 @@ enum Route: Hashable {
 
 
 // MARK: - AppRouter
+/// A simple implimentation of modern view Navigation for SwiftUI.
+///
+/// Specific information about views and their parameter can be found on the main `QueensPuzzleApp` struct.
 @MainActor
 final class AppRouter: ObservableObject {
     @Published var path: [Route] = []

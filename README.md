@@ -60,15 +60,18 @@ While the board size/number of queens can't be less than 4, I first assumed that
 
 
 -- Testing Strategy --
-The project focuses on unit testing core game logic, ensuring correctness of the puzzle mechanics.
+The project's unit testing focuses on the core game logic, where correctness is most critical, predictable/deterministic.
+The majority of tests target the Board model, ensuring that puzzle rules are implemented correctly and remain stable as the UI changes.
 
-- What is tested
-Board setup, tile placement, and light/dark square positioning.
+- Covered Areas
+Board initialization and tile configuration. Including light/dark square layout.
 Queen placement and removal.
-Queen conflict detection: row, column, and diagonal.
-Correct win condition validation.
-The board resetting behavior.
-Best time persistence logic.
+Conflict/threat detection across rows, columns, and diagonals.
+Win condition validation for both valid and invalid board states.
+Board resetting behavior.
+Best Time persistence logic. Including only saving improved times.
+
+In addition, the GameViewModel is tested to verify key gameplay flows such as win detection, state transitions, and reset behavior. Dependencies like persistence are isolated using in-memory implementations to keep tests deterministic and independent from external state.
 
 
 

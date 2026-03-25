@@ -30,7 +30,7 @@ final class GameViewModel: ObservableObject {
     // MARK: - Initializers
     init(boardSize: Int, bestTimeStore: BestTimeStoring) {
         self.boardSize = boardSize
-        self.board = Board(size: boardSize)
+        self.board = Board(boardSize: boardSize)
         self.bestTimeStore = bestTimeStore
     }
 
@@ -56,11 +56,19 @@ final class GameViewModel: ObservableObject {
         board.tile(at: position)
     }
 
+    /// Handles functionality for when a user taps a tile.
+    ///
+    /// Toggles the tile's queen state.
+    /// Checks if the board is in a solved state.
+    ///
+    /// - Parameters:
+    ///   - position: The position of the tile that the user taped.
+    ///
+    /// - Note: Toggle and solved logic are handled on the `Board` model.
     func userTapped(at position: Position) {
         board.toggleQueen(at: position)
 
         if board.isSolved {
-            stopGame()
             userWon()
         }
     }
@@ -69,6 +77,12 @@ final class GameViewModel: ObservableObject {
         showHints.toggle()
     }
 
+
+    /// Resets the board to it's initial game state.
+    ///
+    /// Resets the tiles to their base state,
+    /// resets the timer,
+    /// and ensures that hints and the win screen are not showing.
     func resetGame() {
         stopGame()
 
@@ -85,6 +99,9 @@ final class GameViewModel: ObservableObject {
         stopTimer()
     }
 
+    /// Starts a timer for visual UI purposes.
+    ///
+    /// The real-time score is kept by calculating a start and end `Date` upon view initialization and puzzle completion respectively.
     @MainActor
     private func startTimer() {
         stopTimer()
@@ -102,12 +119,25 @@ final class GameViewModel: ObservableObject {
         timerCancellable = nil
     }
 
+    /// Updates the value used in the UI timer.
+    ///
+    /// This is not used in the actual best time score calculation
     private func updateElapsedTime() {
         guard let startDate else { return }
         elapsedTime = Date().timeIntervalSince(startDate)
     }
 
+    /// Handles the functionality for when the board is in a completed/won state.
+    ///
+    /// Stops the game,
+    /// calcultes the real elapsed time,
+    /// updates the classe's `bestTime` property to reflect this value,
+    /// triggers to show win screen.
+    ///
+    /// While all elapsedTimes are passed in, the logic for saving the actual best time is handled on the `BestTimeStore`.
     private func userWon() {
+        stopGame()
+
         guard let startDate else { return }
 
         let elapsed = Date().timeIntervalSince(startDate)
