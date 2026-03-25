@@ -11,8 +11,6 @@ import SwiftUI
 
 // MARK: - Global Helpers
 enum BoardUI {
-    static let tileSize: CGFloat = 36
-
     static let darkSquareColor = Color(hex: 0x739552)
     static let lightSquareColor = Color(hex: 0xEBECD0)
     static let hasQueenColor = Color.red

@@ -23,14 +23,15 @@ final class GameViewModel: ObservableObject {
 
     let boardSize: Int
     private var startDate: Date?
-    private let bestTimeStore = BestTimeStore()
+    private let bestTimeStore: BestTimeStoring
     private var timerCancellable: AnyCancellable?
 
 
     // MARK: - Initializers
-    init(boardSize: Int) {
+    init(boardSize: Int, bestTimeStore: BestTimeStoring) {
         self.boardSize = boardSize
         self.board = Board(size: boardSize)
+        self.bestTimeStore = bestTimeStore
     }
 
     deinit {
@@ -71,7 +72,7 @@ final class GameViewModel: ObservableObject {
     func resetGame() {
         stopGame()
 
-        board = Board(size: boardSize)
+        board.reset()
         gameEnded = false
         showHints = false
         showWinScreen = false

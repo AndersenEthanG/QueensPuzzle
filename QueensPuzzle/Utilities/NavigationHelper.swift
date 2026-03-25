@@ -25,7 +25,7 @@ final class AppRouter: ObservableObject {
     }
 
     func popCurrent() {
-        path.removeLast()
+        let path = path.popLast()
     }
 
     func popToRoot() {

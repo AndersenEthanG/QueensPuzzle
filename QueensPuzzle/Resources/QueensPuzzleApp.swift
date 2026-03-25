@@ -13,17 +13,18 @@ struct QueensPuzzleApp: App {
 
     // MARK: - Properties
     @StateObject private var router = AppRouter()
+    private let bestTimeStore = BestTimeStore()
 
 
     // MARK: - Main Body
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $router.path) {
-                BoardSelectionView()
+                BoardSelectionView(bestTimeStore: bestTimeStore)
                     .navigationDestination(for: Route.self) { route in
                         switch route {
                         case .game(let boardSize):
-                            GameView(boardSize: boardSize)
+                            GameView(boardSize: boardSize, bestTimeStore: bestTimeStore)
                         }
                     }
             }

@@ -13,11 +13,13 @@ struct GameView: View {
     // MARK: - Properties
     @EnvironmentObject private var router: AppRouter
     @StateObject private var viewModel: GameViewModel
+    let bestTimeStore: BestTimeStore
 
 
     // MARK: - Initializers
-    init(boardSize: Int) {
-        _viewModel = StateObject(wrappedValue: GameViewModel(boardSize: boardSize))
+    init(boardSize: Int, bestTimeStore: BestTimeStore) {
+        _viewModel = StateObject(wrappedValue: GameViewModel(boardSize: boardSize, bestTimeStore: bestTimeStore))
+        self.bestTimeStore = bestTimeStore
     }
 
 
@@ -171,5 +173,5 @@ struct GameView: View {
 
 // MARK: - Preview
 #Preview {
-    GameView(boardSize: 4)
+    GameView(boardSize: 4, bestTimeStore: BestTimeStore())
 }

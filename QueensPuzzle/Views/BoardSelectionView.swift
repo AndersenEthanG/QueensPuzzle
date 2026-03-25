@@ -13,7 +13,7 @@ struct BoardSelectionView: View {
     // MARK: - Properties
     @EnvironmentObject private var router: AppRouter
     @State var boardSize: Int = 4
-
+    let bestTimeStore: BestTimeStore
     let minBoardSize: Int = 4
     let maxBoardSize: Int = 16
 
@@ -50,7 +50,7 @@ struct BoardSelectionView: View {
 
     // MARK: - Methods
     private func bestTimeForBoardSize() -> String {
-        if let storedBestTime = BestTimeStore().bestTime(for: boardSize) {
+        if let storedBestTime = bestTimeStore.bestTime(for: boardSize) {
             let formattedTime = GameTimeFormatter.hourMinuteSecond(from: storedBestTime, decimals: 2)
             return formattedTime
         } else {
@@ -63,13 +63,14 @@ struct BoardSelectionView: View {
 // MARK: - Preview
 #Preview {
     @Previewable @StateObject var router = AppRouter()
+    let bestTimeStore = BestTimeStore()
 
     NavigationStack(path: $router.path) {
-        BoardSelectionView()
+        BoardSelectionView(bestTimeStore: bestTimeStore)
             .navigationDestination(for: Route.self) { route in
                 switch route {
                 case .game(let boardSize):
-                    GameView(boardSize: boardSize)
+                    GameView(boardSize: boardSize, bestTimeStore: bestTimeStore)
                 }
             }
             .environmentObject(router)
