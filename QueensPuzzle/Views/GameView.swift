@@ -142,7 +142,7 @@ struct GameView: View {
 
     private var winScreen: some View {
         GlassEffectContainer {
-            VStack(spacing: 10) {
+            VStack(spacing: 12) {
                 Text("You Win!")
                     .font(.title.weight(.semibold))
                 Text("Your time: \(GameTimeFormatter.hourMinuteSecond(from: viewModel.elapsedTime, decimals: 2))")
@@ -155,14 +155,25 @@ struct GameView: View {
                 Button {
                     viewModel.showWinScreen = false
                 } label: {
-                    Text("Continue")
+                    Text("Review Board")
                         .font(.title3)
                         .fontWeight(.medium)
-                        .padding(.horizontal, 48)
+                        .frame(minWidth: 180)
+                }
+                .buttonStyle(.bordered)
+                .glassEffect(.regular.interactive())
+                .padding(.top)
+                Button {
+                    viewModel.showWinScreen = false
+                    router.popToRoot()
+                } label: {
+                    Text("Menu")
+                        .font(.title3)
+                        .fontWeight(.medium)
+                        .frame(minWidth: 180)
                 }
                 .buttonStyle(.borderedProminent)
                 .glassEffect(.regular.interactive())
-                .padding(.top)
             }
             .padding(32)
             .glassEffect(in: .rect(cornerRadius: 32))
