@@ -141,16 +141,24 @@ struct GameView: View {
     }
 
     private var winScreen: some View {
-        GlassEffectContainer {
+        let elapsedTime = viewModel.elapsedTime
+
+        return GlassEffectContainer {
             VStack(spacing: 12) {
                 Text("You Win!")
                     .font(.title.weight(.semibold))
-                Text("Your time: \(GameTimeFormatter.hourMinuteSecond(from: viewModel.elapsedTime, decimals: 2))")
+                Text("Your time: \(GameTimeFormatter.hourMinuteSecond(from: elapsedTime, decimals: 2))")
                     .font(.headline)
                 if let bestTime = viewModel.bestTime {
-                    Text("Best time: \(GameTimeFormatter.hourMinuteSecond(from: bestTime, decimals: 2))")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                    if bestTime == elapsedTime {
+                        Text("New best time!")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("Best time: \(GameTimeFormatter.hourMinuteSecond(from: bestTime, decimals: 2))")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 Button {
                     viewModel.showWinScreen = false
