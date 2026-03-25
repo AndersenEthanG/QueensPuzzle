@@ -4,13 +4,18 @@ A SwiftUI-based puzzle game where the player solves a variant of the 8-Queens pr
 
 
 -- Demo Video --
+Available on Google Drive
+https://drive.google.com/file/d/18wiIcz70-r9gQsuBfTtElRNcHrD6nArB/view?usp=sharing
+
+Also on YouTube (Be sure to like, comment, subscribe, and SMASH that bell icon to get future notifications!):
+https://youtube.com/shorts/R5oPrCHNJSk
 
 
 
 -- Getting Started --
 - Requirements
-iOS 26.2+
-Xcode 26.3+
+iOS 26+
+Xcode 26+
 A basic knowledge of chess, specifically the queen piece.
 
 - Build & Run
@@ -18,6 +23,13 @@ Clone the repository
 Open QueensPuzzle.xcodeproj in Xcode
 Select a simulator or device
 Press Run (⌘R)
+* Note: If you're having trouble running the app from Xcode on a simulator, try running it directly from the simulator, and not attached Xcode for debugging. Or disable "Debug executable" by going to Product -> Scheme -> Edit Scheme -> Run -> Info -> Executable -> Debug executable. On a candid note, there was like 4 macOS/iOS/Xcode updates within a few days, and I'm not entirely sure why my computer was having troubles all of the sudden. Maybe you won't struggle like I did. I'm still downloading and installing the new updates (again) at the moment.
+
+
+- How To Run Internal Tests
+Open the project in Xcode.
+Select the QueensPuzzle scheme.
+Press ⌘U to run tests, or use the Test navigator.
 
 
 
@@ -47,7 +59,7 @@ Views (SwiftUI)
 * BoardSelectionView: Lets the player choose the puzzle size, and displays best completion time for the currently selected size.
 * GameView: The main gameplay interface. It also includes puzzle size, queens remaining, and elapsed time. As well as the Show Hints button, and a button to reset the board.
 * TileView: Handles visual variations between individual board tiles.
-* WinView: The win screen! (What you're trying to get to!) Displays the player's completion time, the current best time, a Review Board button (which dismisses the win screen) and a Menu button (which brings the player back to the main menu).
+* WinScreen: The win screen! Technically a child view within the GameView. Displays the player's completion time, the current best time, a View Solution button (which dismisses the win screen) and a Menu button (which brings the player back to the main menu).
 
 
 
@@ -81,14 +93,14 @@ Portions of this project were developed with the assistance of AI tools for educ
 
 
 -- Future Improvements --
-Implement an iCloud sync, rather than UserDefaults, to save best times in the cloud. To sync across different devices.
-Add more personalized animations, and sound effects.
-Multi-lingual implementation. Rather than a Localization file, and helper code, all in-game text is stored in-line. I thought it was somewhat outside the scope of the assignment to add this now.
-Accessibility implementations.
-Better UI! More color! Right now everything is black, white, and gray. While I did add some of the new GlassEffect and some rounded corners; the UI is pretty lackluster at the moment.
-Moves tracker. Keep track of how many 'moves' the user made, and keep that as a score. Either in addition to, or instead of the timer.
-Visible queen tokens at the top of the board, which can be 'picked up' by the user, and placed down on the board. Also to pick them up and remove them from the board. Note: I did start to add this functionality, but the code nearly doubled in size before I had a working prototype. So, I decided to not include it for the sake of simplicity.
-Explore possible implementation of higher than 16x16 boards by having the user zoom in and out. This might not be practical, or intuitive.
+* Implement an iCloud sync, rather than UserDefaults, to save best times in the cloud. To sync across different devices.
+* Add more personalized animations, and sound effects.
+* Multi-lingual implementation. Rather than a Localization file, and helper code, all in-game text is stored in-line. I thought it was somewhat outside the scope of the assignment to add this now.
+* Accessibility implementations.
+* Better UI! More color! While the game board is colored to match the Chess.com default board, right now most of the UI is black, white, and gray. I did add some beautification in terms of spacing, font size, and using the new GlassEffect. Overall, the UI is pretty lackluster at the moment.
+* Moves tracker. Keep track of how many 'moves' the user made, and keep that as a score. Either in addition to, or instead of the timer.
+* Visible queen tokens at the top of the board, which can be 'picked up' by the user, and placed down on the board. Also to pick them up and remove them from the board. Note: I did start to add this functionality, but the code nearly doubled in size before I had a working prototype. So, I decided to not include it for the sake of simplicity.
+* Explore possible implementation of higher than 16x16 boards by having the user zoom in and out. This might not be practical, or intuitive.
 
 
 

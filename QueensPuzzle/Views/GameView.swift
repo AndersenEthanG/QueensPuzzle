@@ -163,7 +163,7 @@ struct GameView: View {
                 Button {
                     viewModel.showWinScreen = false
                 } label: {
-                    Text("Review Board")
+                    Text("View Solution")
                         .font(.title3)
                         .fontWeight(.medium)
                         .frame(minWidth: 180)
