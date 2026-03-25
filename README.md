@@ -8,7 +8,7 @@ Available on Google Drive
 https://drive.google.com/file/d/18wiIcz70-r9gQsuBfTtElRNcHrD6nArB/view?usp=sharing
 
 Also on YouTube (Be sure to like, comment, subscribe, and SMASH that bell icon to get future notifications!):
-https://youtube.com/shorts/R5oPrCHNJSk
+https://youtube.com/shorts/R5oPrCHNJSk?si=WPCMv-rgE7WYn7sd
 
 
 
